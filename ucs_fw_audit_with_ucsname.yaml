@@ -1,0 +1,23 @@
+---
+# Below are a few examples you can run the playbook.
+# Note: if you want to run on all standalone servers, use --extra-vars "target=cimc"
+# To target individual host, replace cimc with that host CIMC name. For example --extra-vars "target=rcdn9b-csx-a-nova1-070-r.cisco.com"
+#
+#
+# Example 2 (for build use): used before UCS logical build and after site confirmed good and turn into production
+# ansible-playbook ucs_fw_audit_with_ucsname.yaml -i /usr/local/bin/ansible_ucs_cimc/generated_UCS_inventory --extra-vars "target=cimc" -f 32
+#
+- hosts: '{{ target }}'
+  connection: local
+  gather_facts: no
+  vars_files:
+    - [/etc/ccs/data/site.yaml]
+  tasks:
+    # create logs directory if not exist
+    - name: Task 0 ensure logs directory
+      file: path=./logs state=directory
+      run_once: true
+
+    # check the running firmware version
+    - name: Task 1 check running firmware version for all major components
+      shell: python ./ucsc_fw_audit.py -f expected_fw_version.yaml -i "{{ inventory_hostname }}"  -u "admin" -p "{{ ucs_local_users.admin.password }}"  >> logs/fw_audit_{{ inventory_hostname }}.log 2>&1

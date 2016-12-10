@@ -1,0 +1,78 @@
+---
+---
+# usage example audit with list of os name:
+# Example 1: run it with your file containing list of os name, replace spare-nova-os-list with your file name
+# If the node is not cimc physical server, it will be skipped
+# ansible-playbook  ./cimc_fw_audit_with_osname.yaml -f 32 -e "target=all" --limit @spare-nova-os-list
+#
+# Example 2: run it with a particular server, define your server with target=xx
+# Same as example 1, scripts will only be run if type is physical and management_type is CIMC
+# ansible-playbook  ./cimc_fw_audit_with_osname.yaml -e 'target=csx-a-nova1-406*'
+- hosts: '{{ target }}'
+  connection: local
+  gather_facts: no
+  vars_files:
+    - [/etc/ccs/data/site.yaml]
+  pre_tasks:
+    - name: set host fact
+      local_action: set_fact host="{{ inventory_hostname }}"
+    - name: assert target
+      local_action: assert that="target is defined"
+  tasks:
+    # create logs directory if not exist
+    - name: Task 0 ensure logs directory
+      file: path=./logs state=directory
+      run_once: true
+
+    # check the running firmware version
+    - name: Task 1 check running firmware version for all major components
+      shell: python ./ucsc_fw_audit.py -f expected_fw_version.yaml -i "{{ deploy_args.management_ip }}"  -u "admin" -p "{{ ucs_local_users.admin.password }}"  >> logs/fw_audit_{{ inventory_hostname }}.log 2>&1
+      when: "'{{ type }}' == 'physical' and '{{ deploy_args.management_type }}' == 'cimc'"
+      register: auditFw_result
+      failed_when: "'Error' in auditFw_result.stdout"
+# usage example audit with list of os name:
+# Example 1: run it with your file containing list of os name, replace spare-nova-os-list with your file name
+# If the node is not cimc physical server, it will be skipped
+# ansible-playbook  ./cimc_fw_audit_with_osname.yaml -f 32 -e "target=all" --limit @spare-nova-os-list
+#
+# Example 2: run it with a particular server, define your server with target=xx
+# Same as example 1, scripts will only be run if type is physical and management_type is CIMC
+# ansible-playbook  ./cimc_fw_audit_with_osname.yaml -e 'target=csx-a-nova1-406*'
+#
+- hosts: '{{ target }}'
+  connection: local
+  gather_facts: no
+  vars_files:
+    - [/etc/ccs/data/site.yaml]
+  pre_tasks:
+    - name: set host fact
+      local_action: set_fact host="{{ inventory_hostname }}"
+    - name: assert target
+      local_action: assert that="target is defined"
+    - name: assert node type
+      fail: msg="{{ inventory_hostname }} type must be 'physical' and 'cimc' in order for cimc config"
+      when: "'{{ type }}' != 'physical' or '{{ deploy_args.management_type }}' != 'cimc'"
+  tasks:
+    # create logs directory if not exist
+    - name: Task 0 ensure logs directory
+      file: path=./logs state=directory
+      run_once: true
+
+    # check the running firmware version
+    - name: Task 1 check running firmware version for all major components
+      shell: python ./ucsc_fw_audit.py -f expected_fw_version.yaml -i "{{ deploy_args.management_ip }}"  -u "admin" -p "{{ ucs_local_users.admin.password }}"
+      when: "'{{ type }}' == 'physical' and '{{ deploy_args.management_type }}' == 'cimc'"
+      register: auditFw_result
+      failed_when: "'Error' in auditFw_result.stdout"
+      ignore_errors: true
+
+    # display output when firmware not as expected
+    - name: Task 2 display firmware audit result when it is not as expected
+      debug: var= auditFw_result.stdout_lines
+      when: "'{{ type }}' == 'physical' and '{{ deploy_args.management_type }}' == 'cimc' and 'Error' in auditFw_result.stdout"
+
+    # write Error to log file
+    - name: Task 3 write Error to log file
+      shell: echo "{{ item }}" >> logs/fwaudit-{{ inventory_hostname }}.log
+      with_items: "{{ auditFw_result.stdout_lines }}"
+      when: "'{{ type }}' == 'physical' and '{{ deploy_args.management_type }}' == 'cimc' and 'Error' in auditFw_result.stdout"

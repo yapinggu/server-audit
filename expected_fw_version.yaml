@@ -1,0 +1,126 @@
+---
+# http://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/release/notes/Release_Notes_for_Cisco_C-Series_SW_2_0_3.html#pgfId-75890222table 6 and table 7
+# http://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/release/firmware_files/2_0_x/b_UCS_C-Series_Firmware_Files_2_0_x/b_UCS_C-Series_Firmware_Files_2_0_x_chapter_01.html#id_10134__section_A593E8C4254D4FE9BCE8FDFD9DDBAD54
+# TODO: Tested against ceph osd and ceph mon, need to test also against C220 M4 and C240 M4 and compute M3 nodes
+
+UCSC_expected_fw_version:
+  UCSC-C220-M3:
+    BIOS:
+      DN: "sys/rack-unit-1/bios/fw-boot-loader"
+      Version: 
+        - '2.0.9a.0'
+    CIMC:
+      DN: "sys/rack-unit-1/mgmt/fw-system"
+      Version:
+        - '2.0(9f)'
+    # Firmware version for PCIE card like Raid controller, broadcom card etc
+    pciEquipSlot:
+      VIC1225:
+          Model: "UCS VIC 1225 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      VIC1227:
+          Model: "UCS VIC 1227 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      storageController:
+          Model: "LSI 9271-8i MegaRAID SAS HBA"
+          Version:
+          # it seems version shows 23.33.0-0040, but running version shows 3.450, both are valid
+            - '23.33.0-0040'
+      networkAdapterUnit:
+        Model: "Broadcom 57712-S 10 Gbps 2 port FCOE"
+        Version:
+          - 'A1213GT7441.0'
+
+  UCSC-C240-M3:
+    BIOS:
+      DN: "sys/rack-unit-1/bios/fw-boot-loader"
+      Version:
+        - '2.0.9a.0'
+    CIMC:
+      DN: "sys/rack-unit-1/mgmt/fw-system"
+      Version:
+        - '2.0(9f)'
+    # Firmware version for PCIE card like Raid controller, broadcom card etc
+    pciEquipSlot:
+      VIC1225:
+          Model: "UCS VIC 1225 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      VIC1227:
+          Model: "UCS VIC 1227 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      storageController:
+          Model: "LSI 9271-8i MegaRAID SAS HBA"
+          Version:
+            - '23.33.0-0040'
+      networkAdapterUnit:
+        Model: "Broadcom 57712-S 10 Gbps 2 port FCOE"
+        Version:
+          - 'A1213GT7441.0'
+
+  UCSC-C220-M4:
+    BIOS:
+      DN: "sys/rack-unit-1/bios/fw-boot-loader"
+      Version:
+        - '2.0.9b.0'
+    CIMC:
+      DN: "sys/rack-unit-1/mgmt/fw-system"
+      Version:
+        - '2.0(9f)'
+
+    #adaptorUnit:
+    #  class_id: "adaptorUnit"
+    #  fw_postfix: "/mgmt/fw-system"
+    #  Version:
+    #    - '4.1(1d)'
+
+    # Firmware version for PCIE card like Raid controller, broadcom card etc
+    pciEquipSlot:
+      VIC1225:
+          Model: "UCS VIC 1225 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      VIC1227:
+          Model: "UCS VIC 1227 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      storageController:
+          Model: "Cisco 12G SAS Modular Raid Controller"
+          Version:
+            - '24.9.1-0011'
+      networkAdapterUnit:
+        Model: "Broadcom 57712-S 10 Gbps 2 port FCOE"
+        Version:
+          - 'A1213GT7441.0'
+
+  UCSC-C240-M4:
+    BIOS:
+      DN: "sys/rack-unit-1/bios/fw-boot-loader"
+      Version:
+        - '2.0.9b.0'
+    CIMC:
+      DN: "sys/rack-unit-1/mgmt/fw-system"
+      Version:
+        - '2.0(9f)'
+
+    # Firmware version for PCIE card like Raid controller, broadcom card etc
+    pciEquipSlot:
+      VIC1225:
+          Model: "UCS VIC 1225 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      VIC1227:
+          Model: "UCS VIC 1227 10Gbps 2 port CNA SFP+"
+          Version:
+            - '4.1(1d)'
+      storageController:
+          Model: "Cisco 12G SAS Modular Raid Controller"
+          Version:
+            - '24.9.1-0011'
+      networkAdapterUnit:
+        Model: "Broadcom 57712-S 10 Gbps 2 port FCOE"
+        Version:
+          - 'A1213GT7441.0'
